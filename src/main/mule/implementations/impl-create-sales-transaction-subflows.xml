@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="impl-create-orange-app-sales-transaction-subflow" doc:id="b31d2610-411c-40ed-abb7-ae8769e67cec" >
+		<logger level="INFO" doc:name="FLOW - START impl-create-orange-app-sales-transaction-subflow" doc:id="f8a64665-b041-4417-8534-e483104a3403" message="FLOW - START impl-create-orange-app-sales-transaction-subflow"/>
+		<ee:transform doc:name="Set Request Payload" doc:id="a5432eff-a2a4-4ef2-bf2e-5b6fa597bac9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+
+var purchasedItems = payload.line_items map (
+    {
+        "itemId": $.lineId,
+        "name": $.product,
+        "price": $.unitPrice,
+        "quantity": $.quantity
+    }
+ )
+---
+{
+    "transactionId": payload.transactionId,
+    "source": "Orange App",
+    "name": payload.customer_information.name,
+    "address": payload.customer_information.address,
+    "age": payload.customer_information.age,
+    "gender": payload.customer_information.gender,
+    "phone": payload.customer_information.phone,
+    "purchasedItems": purchasedItems,
+    "total": payload.total,
+    "modeOfPayment": payload.mop,
+    "timestamp": payload.timestamp
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="sales-prc-app-post-sales-transaction-subflow" doc:id="3031940e-533c-4bb6-937f-6836a8ea51b9" name="sales-prc-app-post-sales-transaction-subflow"/>
+		<logger level="INFO" doc:name="FLOW - END impl-create-orange-app-sales-transaction-subflow" doc:id="9d09aa4d-c1b8-4143-86a0-b1f6ee09daf3" message="FLOW - END impl-create-orange-app-sales-transaction-subflow"/>
+	</sub-flow>
+	<sub-flow name="impl-create-blue-app-sales-transaction-subflow" doc:id="3eb6c294-7c80-4b1e-98c0-fc31f19ff0d5" >
+		<logger level="INFO" doc:name="FLOW - START impl-create-blue-app-sales-transaction-subflow" doc:id="a95d8890-c86d-4b71-83f4-d452ca7d9dd5" message="FLOW - START impl-create-blue-app-sales-transaction-subflow" />
+		<ee:transform doc:name="Set Request Payload" doc:id="bed9a22e-0d09-41b8-9cd9-9fe4541c7f4d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json skipNullOn="everywhere"
+
+var purchasedItems = payload.products map (
+    {
+        "itemId": $.id,
+        "name": $.name,
+        "price": $.price,
+        "quantity": $.qty
+    }
+)
+---
+{
+    "transactionId": payload.salesId,
+    "source": "Blue App",
+    "name": payload.fullName,
+    "address": payload.deliveryLoc,
+    "age": (payload.age as Number) default null,
+    "gender": payload.gender,
+    "phone": payload.contact,
+    "purchasedItems": purchasedItems,
+    "total": payload.amountDue,
+    "modeOfPayment": payload.paymentType,
+    "timestamp": payload.creationDate
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables />
+		</ee:transform>
+		<flow-ref doc:name="sales-prc-app-post-sales-transaction-subflow" doc:id="68406204-8f7c-4be9-92f4-971361ec69fc" name="sales-prc-app-post-sales-transaction-subflow" />
+		<logger level="INFO" doc:name="FLOW - END impl-create-blue-app-sales-transaction-subflow" doc:id="26bab313-410d-4c05-a0b7-56e1878662ab" message="FLOW - END impl-create-blue-app-sales-transaction-subflow" />
+	</sub-flow>
+</mule>

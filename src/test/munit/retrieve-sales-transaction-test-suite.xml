@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="   http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="retrieve-sales-transaction-test-suite.xml">
+		<munit:parameterizations >
+			<munit:parameterization name="common-configs" >
+				<munit:parameters >
+					<munit:parameter propertyName="app.env" value="DEV" />
+					<munit:parameter propertyName="app.key" value="cambridge123456789" />
+				</munit:parameters>
+			</munit:parameterization>
+		</munit:parameterizations>
+	</munit:config>
+	<munit:test description="Test" doc:id="4fbf193c-6aef-40d8-94e8-fcb15fc4e081" name="retrieve-sales-transaction-test-suite">
+		<munit:behavior>
+			<munit-tools:mock-when doc:id="7919c925-82b9-4922-b2ee-5e85bccb72c0" doc:name="Mock GET /transaction" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Request GET /transaction" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://sales/retrieveSalesOrdersRes.json', 'application/json')]"/>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:id="7828d3bb-c462-43ea-a822-07923dd24940" doc:name="Flow-ref to get:\sales:heritage-exp-app-config" name="get:\sales:heritage-exp-app-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:id="c18f18af-06f3-4644-aab3-48c7f0eaa50d" doc:name="Assert Success Response" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+
+</mule>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="impl-retrieve-sales-transaction-subflow" doc:id="f94fedbd-dd05-4a58-8a8a-03d26332488f" >
+		<logger level="INFO" doc:name="FLOW - START impl-retrieve-sales-orders-subflow" doc:id="18d10ec8-e75f-4cfa-ad56-1382f8c8a701" message="FLOW - START impl-retrieve-sales-orders-subflow" />
+		<flow-ref doc:name="sales-prc-app-retrieve-sales-transaction-subflow" doc:id="fedd2f6b-da13-4aae-a040-b3ecb31b903e" name="sales-prc-app-retrieve-sales-transaction-subflow"/>
+		<logger level="INFO" doc:name="FLOW - END impl-retrieve-sales-orders-subflow" doc:id="7121d83a-89ca-43c6-a7ae-5f7df6e93506" message="FLOW - END impl-retrieve-sales-orders-subflow" />
+	</sub-flow>
+</mule>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <http:listener-config name="heritage-exp-app-httpListenerConfig">
+        <http:listener-connection host="${app.host}" port="${app.port}" />
+    </http:listener-config>
+    <apikit:config name="heritage-exp-app-config" api="resource::3f2c2f8f-17f9-4bfd-80fb-97b4803eb728:orange-exp-app:1.0.4:raml:zip:heritage-exp-app.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="heritage-exp-app-main">
+        <http:listener config-ref="heritage-exp-app-httpListenerConfig" path="${app.basePath}">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="heritage-exp-app-config" />
+        <error-handler ref="heritage-exp-app-global-error-handler" />
+    </flow>
+    <flow name="heritage-exp-app-console">
+        <http:listener config-ref="heritage-exp-app-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="heritage-exp-app-config" />
+        <error-handler ref="heritage-exp-app-global-error-handler" />
+    </flow>
+    <flow name="get:\sales:heritage-exp-app-config">
+        <flow-ref doc:name="impl-retrieve-sales-orders-subflow" doc:id="a13cf15a-a60f-4a3e-a864-4c77cf09a28a" name="impl-retrieve-sales-transaction-subflow" />
+    </flow>
+    <flow name="post:\sales\transaction\blueApp:application\json:heritage-exp-app-config" doc:id="47952f68-ff48-45cf-8890-9d5246e8e9ca">
+        <flow-ref doc:name="impl-create-blue-app-sales-transaction-subflow" doc:id="e3a27e7d-20a6-4584-91c9-8d3b174b802b" name="impl-create-blue-app-sales-transaction-subflow" />
+    </flow>
+    <flow name="post:\sales\transaction\orangeApp:application\json:heritage-exp-app-config" doc:id="0bc175b4-aef2-4246-9486-4385a81e4f62">
+        <flow-ref doc:name="impl-create-orange-app-sales-transaction-subflow" doc:id="337f7908-1109-4404-a5be-d122758356e3" name="impl-create-orange-app-sales-transaction-subflow" />
+    </flow>
+</mule>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<api-gateway:autodiscovery apiId="${app.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="86d9cf6a-ee92-412e-be8d-ded8ac6596bc" flowRef="heritage-exp-app-main" />
+	<configuration-properties doc:name="Configuration properties" doc:id="532c525d-095f-437f-9cf9-01b359fca2f0" file="config\config-${app.env}.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="3fabcae3-a428-4d85-9337-95ba0f5092e8" file="config\secure-config-${app.env}.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="79532977-2457-4c40-a159-6e8e96a944a5" file="config\secure-config-${app.env}.yaml" key="${app.key}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<http:request-config name="HTTP_Request_config-sales-prc-app" doc:name="HTTP Request config" doc:id="143f37e5-0756-4c23-b903-8cf84ab09aad" basePath="${sales-prc-app.basePath}" responseTimeout="${sales-prc-app.responseTimeOut}">
+		<http:request-connection host="${sales-prc-app.host}" port="${sales-prc-app.port}" />
+		<http:default-headers >
+			<http:default-header key="client-id" value="${secure::sales-prc-app.client-id}" />
+			<http:default-header key="client-secret" value="${secure::sales-prc-app.client-secret}" />
+			<http:default-header key="x-correlation-id" value="#[correlationId]" />
+		</http:default-headers>
+	</http:request-config>
+</mule>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="   http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd   http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd   http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="create-sales-transaction-test-suite.xml">
+		<munit:parameterizations >
+			<munit:parameterization name="common-configs" >
+				<munit:parameters >
+					<munit:parameter propertyName="app.env" value="DEV" />
+					<munit:parameter propertyName="app.key" value="cambridge123456789" />
+				</munit:parameters>
+			</munit:parameterization>
+		</munit:parameterizations>
+	</munit:config>
+	<munit:test description="Test" doc:id="4fbf193c-6aef-40d8-94e8-fcb15fc4e081" name="create-orange-app-sales-transaction-test-suite">
+		<munit:behavior>
+			<munit-tools:mock-when doc:id="7919c925-82b9-4922-b2ee-5e85bccb72c0" doc:name="Mock POST /transaction" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Request POST /transaction" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://sales/createSalesOrderRes.json', 'application/json')]"/>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:id="27839795-e098-4fd8-bff8-94bb148616ac" doc:name="Set Event">
+				<munit:payload value="#[output application/json --- readUrl('classpath://sales/createOrangeAppSalesOrderReq.json', 'application/json')]"/>
+			</munit:set-event>
+			<flow-ref doc:id="7828d3bb-c462-43ea-a822-07923dd24940" doc:name="Flow-ref to post:\sales\transaction\orangeApp:application\json:heritage-exp-app-config" name="post:\sales\transaction\orangeApp:application\json:heritage-exp-app-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals actual="#[payload.statusCode]" doc:id="173347cd-fe3e-4727-af7a-1de32e12c28e" doc:name="Assert Success Response" expected="#[200]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test description="Test" doc:id="5a87412b-3fbe-472f-9fb4-e7f124829a24" name="create-blue-app-sales-transaction-test-suite">
+		<munit:behavior>
+			<munit-tools:mock-when doc:id="24747690-0e77-439a-938d-8623ac9e5822" doc:name="Mock POST /transaction" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Request POST /transaction" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://sales/createSalesOrderRes.json', 'application/json')]"/>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<munit:set-event doc:id="c8642b13-b80e-4b88-8a02-c091f5effe11" doc:name="Set Event">
+				<munit:payload value="#[output application/json --- readUrl('classpath://sales/createBlueAppSalesOrderReq.json', 'application/json')]"/>
+			</munit:set-event>
+			<flow-ref doc:id="27ea5b79-14ef-4daa-b66c-0679828e3301" doc:name="Flow-ref to post:\sales\transaction\blueApp:application\json:heritage-exp-app-config" name="post:\sales\transaction\blueApp:application\json:heritage-exp-app-config"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals actual="#[payload.statusCode]" doc:id="bfe8b603-7fb8-4172-b859-7df3f3c3329c" doc:name="Assert Success Response" expected="#[200]"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>
