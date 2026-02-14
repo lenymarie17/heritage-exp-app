@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 		<secure-properties:encrypt algorithm="Blowfish" />
 	</secure-properties:config>
 	<http:request-config name="HTTP_Request_config-sales-prc-app" doc:name="HTTP Request config" doc:id="143f37e5-0756-4c23-b903-8cf84ab09aad" basePath="${sales-prc-app.basePath}" responseTimeout="${sales-prc-app.responseTimeOut}">
-		<http:request-connection host="${sales-prc-app.host}" port="${sales-prc-app.port}" />
+		<http:request-connection host="${sales-prc-app.host}" port="${sales-prc-app.port}" protocol="HTTPS"/>
 		<http:default-headers >
 			<http:default-header key="client-id" value="${secure::sales-prc-app.client-id}" />
 			<http:default-header key="client-secret" value="${secure::sales-prc-app.client-secret}" />

@@ -1,16 +1,16 @@
 # heritage-exp-app Configuration
 
-http:
-  host: "0.0.0.0"
-  port: "8081"
-
 app:
   id: "20734121"
+  host: "0.0.0.0"
+  port: "8081"
   basePath: "/heritage/exp/v1/*"
 
 sales-prc-app:
-  host: "0.0.0.0"
-  port: "8082"
+  #host: "0.0.0.0"
+  #port: "8082"
+  host: "sales-prc-app-90stud.5sc6y6-3.usa-e2.cloudhub.io"
+  port: "443"
   basePath: "/sales/prc/v1"
   path:
     transaction: "/transaction"
